@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module'
 import { CategoriesModule } from './modules/categories/categories.module'
 import { UnitsModule } from './modules/units/units.module'
 import { SuppliersModule } from './modules/suppliers/suppliers.module'
+import { ProductsModule } from './modules/products/products.module'
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard'
 import { RolesGuard } from './shared/guards/roles.guard'
@@ -22,6 +23,7 @@ import { RolesGuard } from './shared/guards/roles.guard'
     CategoriesModule,
     UnitsModule,
     SuppliersModule,
+    ProductsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
