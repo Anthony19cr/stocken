@@ -9,6 +9,9 @@ import { CategoriesModule } from './modules/categories/categories.module'
 import { UnitsModule } from './modules/units/units.module'
 import { SuppliersModule } from './modules/suppliers/suppliers.module'
 import { ProductsModule } from './modules/products/products.module'
+import { StockMovementsModule } from './modules/stock-movements/stock-movements.module'
+import { EntriesModule } from './modules/entries/entries.module'
+import { OutputsModule } from './modules/outputs/outputs.module'
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard'
 import { RolesGuard } from './shared/guards/roles.guard'
@@ -24,6 +27,9 @@ import { RolesGuard } from './shared/guards/roles.guard'
     UnitsModule,
     SuppliersModule,
     ProductsModule,
+    StockMovementsModule,
+    EntriesModule,
+    OutputsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
