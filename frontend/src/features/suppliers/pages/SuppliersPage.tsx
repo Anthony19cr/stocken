@@ -1,14 +1,27 @@
 import { useState } from 'react'
-import { Plus, Search, Truck, Mail, Phone } from 'lucide-react'
-import { useSuppliersPage } from '../hooks/useSuppliers'
+import { Plus, Search, Truck, Mail, Phone, Pencil, Trash2 } from 'lucide-react'
+import { useSuppliersPage, useDeactivateSupplier } from '../hooks/useSuppliers'
 import { CreateSupplierModal } from '../components/CreateSupplierModal'
+import { EditSupplierModal } from '../components/EditSupplierModal'
+import { ConfirmModal } from '../../../components/ui/ConfirmModal'
+import type { Supplier } from '../types/supplier.types'
 
 export function SuppliersPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [showCreate, setShowCreate] = useState(false)
+  const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null)
+  const [deactivatingSupplier, setDeactivatingSupplier] = useState<Supplier | null>(null)
 
   const { data, isLoading } = useSuppliersPage(page, search || undefined)
+  const { mutate: deactivate, isPending: deactivating } = useDeactivateSupplier()
+
+  const handleDeactivate = () => {
+    if (!deactivatingSupplier) return
+    deactivate(deactivatingSupplier.id, {
+      onSuccess: () => setDeactivatingSupplier(null),
+    })
+  }
 
   return (
     <div className="space-y-5">
@@ -50,7 +63,7 @@ export function SuppliersPage() {
           <Truck className="w-10 h-10 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500 font-medium">No hay proveedores</p>
           <p className="text-gray-400 text-sm mt-1">
-            {search ? 'Intenta con otro término de búsqueda' : 'Agrega tu primer proveedor'}
+            {search ? 'Intenta con otro término' : 'Agrega tu primer proveedor'}
           </p>
         </div>
       ) : (
@@ -64,10 +77,22 @@ export function SuppliersPage() {
                 <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
                   <Truck size={16} className="text-blue-600" />
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium
-                  ${supplier.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                  {supplier.isActive ? 'Activo' : 'Inactivo'}
-                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setEditingSupplier(supplier)}
+                    className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Editar"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                  <button
+                    onClick={() => setDeactivatingSupplier(supplier)}
+                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Desactivar"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
               </div>
 
               <h3 className="font-semibold text-gray-900 text-sm">{supplier.name}</h3>
@@ -119,6 +144,23 @@ export function SuppliersPage() {
       )}
 
       {showCreate && <CreateSupplierModal onClose={() => setShowCreate(false)} />}
+      {editingSupplier && (
+        <EditSupplierModal
+          supplier={editingSupplier}
+          onClose={() => setEditingSupplier(null)}
+        />
+      )}
+      {deactivatingSupplier && (
+        <ConfirmModal
+          title="Desactivar proveedor"
+          message={`¿Estás seguro de que quieres desactivar "${deactivatingSupplier.name}"?`}
+          confirmLabel="Desactivar"
+          onConfirm={handleDeactivate}
+          onClose={() => setDeactivatingSupplier(null)}
+          isPending={deactivating}
+          variant="danger"
+        />
+      )}
     </div>
   )
 }

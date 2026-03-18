@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { Plus, Search, AlertTriangle, Package } from 'lucide-react'
-import { useProducts } from '../hooks/useProducts'
+import { Plus, Search, AlertTriangle, Package, Pencil, Trash2 } from 'lucide-react'
+import { useProducts, useDeactivateProduct } from '../hooks/useProducts'
 import { useCategories } from '../hooks/useCatalogs'
 import { StockStatusBadge } from '../components/StockStatusBadge'
 import { CreateProductModal } from '../components/CreateProductModal'
+import { EditProductModal } from '../components/EditProductModal'
+import { ConfirmModal } from '../../../components/ui/ConfirmModal'
+import type { Product } from '../types/product.types'
 
 export function ProductsPage() {
   const [search, setSearch] = useState('')
@@ -11,6 +14,8 @@ export function ProductsPage() {
   const [lowStock, setLowStock] = useState(false)
   const [page, setPage] = useState(1)
   const [showCreate, setShowCreate] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [deactivatingProduct, setDeactivatingProduct] = useState<Product | null>(null)
 
   const { data, isLoading } = useProducts({
     search: search || undefined,
@@ -21,11 +26,18 @@ export function ProductsPage() {
   })
 
   const { data: categories = [] } = useCategories()
+  const { mutate: deactivate, isPending: deactivating } = useDeactivateProduct()
+
+  const handleDeactivate = () => {
+    if (!deactivatingProduct) return
+    deactivate(deactivatingProduct.id, {
+      onSuccess: () => setDeactivatingProduct(null),
+    })
+  }
 
   return (
     <div className="space-y-5">
 
-      {/* Encabezado */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
@@ -42,7 +54,6 @@ export function ProductsPage() {
         </button>
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -53,7 +64,6 @@ export function ProductsPage() {
             className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
           />
         </div>
-
         <select
           value={categoryId}
           onChange={(e) => { setCategoryId(e.target.value); setPage(1) }}
@@ -64,7 +74,6 @@ export function ProductsPage() {
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
-
         <button
           onClick={() => { setLowStock(!lowStock); setPage(1) }}
           className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm font-medium transition-colors
@@ -78,24 +87,19 @@ export function ProductsPage() {
         </button>
       </div>
 
-      {/* Tabla */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center">
-            <div className="animate-pulse space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-12 bg-gray-100 rounded" />
-              ))}
-            </div>
+          <div className="p-8 animate-pulse space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-12 bg-gray-100 rounded" />
+            ))}
           </div>
         ) : !data?.data?.length ? (
           <div className="p-12 text-center">
             <Package className="w-10 h-10 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500 font-medium">No hay productos</p>
             <p className="text-gray-400 text-sm mt-1">
-              {search || categoryId || lowStock
-                ? 'Intenta con otros filtros'
-                : 'Crea tu primer producto'}
+              {search || categoryId || lowStock ? 'Intenta con otros filtros' : 'Crea tu primer producto'}
             </p>
           </div>
         ) : (
@@ -108,6 +112,7 @@ export function ProductsPage() {
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock actual</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mínimo</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -138,6 +143,24 @@ export function ProductsPage() {
                     <td className="px-4 py-3">
                       <StockStatusBadge status={product.stockStatus} />
                     </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setEditingProduct(product)}
+                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Editar"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          onClick={() => setDeactivatingProduct(product)}
+                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Desactivar"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -145,7 +168,6 @@ export function ProductsPage() {
           </div>
         )}
 
-        {/* Paginación */}
         {data && data.total > 20 && (
           <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
             <p className="text-xs text-gray-500">
@@ -172,6 +194,18 @@ export function ProductsPage() {
       </div>
 
       {showCreate && <CreateProductModal onClose={() => setShowCreate(false)} />}
+      {editingProduct && <EditProductModal product={editingProduct} onClose={() => setEditingProduct(null)} />}
+      {deactivatingProduct && (
+        <ConfirmModal
+          title="Desactivar producto"
+          message={`¿Estás seguro de que quieres desactivar "${deactivatingProduct.name}"? El producto no aparecerá en el inventario activo pero su historial se conserva.`}
+          confirmLabel="Desactivar"
+          onConfirm={handleDeactivate}
+          onClose={() => setDeactivatingProduct(null)}
+          isPending={deactivating}
+          variant="danger"
+        />
+      )}
     </div>
   )
 }

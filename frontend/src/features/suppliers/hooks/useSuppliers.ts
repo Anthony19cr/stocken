@@ -26,3 +26,27 @@ export function useCreateSupplier() {
     },
   })
 }
+
+export function useUpdateSupplier() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: Partial<CreateSupplierData> }) =>
+      suppliersService.update(id, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] })
+    },
+  })
+}
+
+export function useDeactivateSupplier() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) =>
+      suppliersService.update(id, { isActive: false }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: ['suppliers'] })
+    },
+  })
+}

@@ -14,4 +14,5 @@ export interface CreateSupplierData {
   phone?: string
   email?: string
   notes?: string
+  isActive?: boolean
 }

@@ -15,6 +15,12 @@ export class UpdateProductDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  @Matches(/^[A-Z0-9-]+$/, { message: 'SKU solo puede contener mayúsculas, números y guiones' })
+  sku?: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsUUID()
   categoryId?: string
 

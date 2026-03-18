@@ -28,6 +28,17 @@ export function useCreateProduct() {
   })
 }
 
+export function useUpdateProduct() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: Partial<CreateProductData> }) =>
+      productsService.update(id, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: productKeys.lists() })
+    },
+  })
+}
+
 export function useDeactivateProduct() {
   const queryClient = useQueryClient()
   return useMutation({
