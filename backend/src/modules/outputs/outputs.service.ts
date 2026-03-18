@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { CreateOutputDto } from './dto/create-output.dto'
 import { OutputResponseDto, PaginatedOutputsDto } from './dto/output-response.dto'
 import { StockMovementsService } from '../stock-movements/stock-movements.service'
+import { AlertsService } from '../alerts/alerts.service'
 import { ResourceNotFoundException } from '../../shared/exceptions/app.exception'
 import { StockMovementType, MovementDirection, OutputReason } from '@prisma/client'
 
@@ -11,6 +12,7 @@ export class OutputsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly stockMovementsService: StockMovementsService,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async findAll(page = 1, pageSize = 20, productId?: string): Promise<PaginatedOutputsDto> {
@@ -50,13 +52,12 @@ export class OutputsService {
     })
     if (!product) throw new ResourceNotFoundException('Producto', dto.productId)
 
-    // Determinar tipo de movimiento según razón de salida
-    const movementType = dto.outputReason === OutputReason.WASTE || dto.outputReason === OutputReason.EXPIRED
-      ? StockMovementType.WASTE
-      : StockMovementType.SALE
+    const movementType =
+      dto.outputReason === OutputReason.WASTE || dto.outputReason === OutputReason.EXPIRED
+        ? StockMovementType.WASTE
+        : StockMovementType.SALE
 
-    return this.prisma.$transaction(async (tx) => {
-      // 1. Crear movimiento de stock
+    const output = await this.prisma.$transaction(async (tx) => {
       const movement = await this.stockMovementsService.createMovement(tx, {
         productId: dto.productId,
         type: movementType,
@@ -67,8 +68,7 @@ export class OutputsService {
         userId,
       })
 
-      // 2. Crear registro de salida
-      const output = await tx.inventoryOutput.create({
+      return tx.inventoryOutput.create({
         data: {
           productId: dto.productId,
           quantity: dto.quantity,
@@ -79,9 +79,12 @@ export class OutputsService {
         },
         include: { product: { select: { name: true } } },
       })
-
-      return this.mapToDto(output)
     })
+
+    // Evaluar alertas fuera de la transacción
+    await this.alertsService.evaluateProductAlerts(dto.productId)
+
+    return this.mapToDto(output)
   }
 
   private mapToDto(output: any): OutputResponseDto {

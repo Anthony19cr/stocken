@@ -12,6 +12,9 @@ import { ProductsModule } from './modules/products/products.module'
 import { StockMovementsModule } from './modules/stock-movements/stock-movements.module'
 import { EntriesModule } from './modules/entries/entries.module'
 import { OutputsModule } from './modules/outputs/outputs.module'
+import { AlertsModule } from './modules/alerts/alerts.module'
+import { DashboardModule } from './modules/dashboard/dashboard.module'
+import { SettingsModule } from './modules/settings/settings.module'
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard'
 import { RolesGuard } from './shared/guards/roles.guard'
@@ -30,6 +33,9 @@ import { RolesGuard } from './shared/guards/roles.guard'
     StockMovementsModule,
     EntriesModule,
     OutputsModule,
+    AlertsModule,
+    DashboardModule,
+    SettingsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },

@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { CreateEntryDto } from './dto/create-entry.dto'
 import { EntryResponseDto, PaginatedEntriesDto } from './dto/entry-response.dto'
 import { StockMovementsService } from '../stock-movements/stock-movements.service'
+import { AlertsService } from '../alerts/alerts.service'
 import { ResourceNotFoundException } from '../../shared/exceptions/app.exception'
 import { StockMovementType, MovementDirection } from '@prisma/client'
 
@@ -11,12 +12,11 @@ export class EntriesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly stockMovementsService: StockMovementsService,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async findAll(page = 1, pageSize = 20, productId?: string): Promise<PaginatedEntriesDto> {
-    const where = {
-      ...(productId && { productId }),
-    }
+    const where = { ...(productId && { productId }) }
 
     const [entries, total] = await Promise.all([
       this.prisma.inventoryEntry.findMany({
@@ -53,14 +53,12 @@ export class EntriesService {
   }
 
   async create(dto: CreateEntryDto, userId: string): Promise<EntryResponseDto> {
-    // Verificar que el producto existe
     const product = await this.prisma.product.findUnique({
       where: { id: dto.productId, deletedAt: null },
     })
     if (!product) throw new ResourceNotFoundException('Producto', dto.productId)
 
-    return this.prisma.$transaction(async (tx) => {
-      // 1. Crear el movimiento de stock
+    const entry = await this.prisma.$transaction(async (tx) => {
       const movement = await this.stockMovementsService.createMovement(tx, {
         productId: dto.productId,
         type: StockMovementType.PURCHASE,
@@ -72,8 +70,7 @@ export class EntriesService {
         userId,
       })
 
-      // 2. Crear el registro de entrada
-      const entry = await tx.inventoryEntry.create({
+      return tx.inventoryEntry.create({
         data: {
           productId: dto.productId,
           supplierId: dto.supplierId,
@@ -89,9 +86,12 @@ export class EntriesService {
           supplier: { select: { name: true } },
         },
       })
-
-      return this.mapToDto(entry)
     })
+
+    // Evaluar alertas fuera de la transacción
+    await this.alertsService.evaluateProductAlerts(dto.productId)
+
+    return this.mapToDto(entry)
   }
 
   private mapToDto(entry: any): EntryResponseDto {
