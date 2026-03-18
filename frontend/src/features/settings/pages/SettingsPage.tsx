@@ -26,14 +26,15 @@ export function SettingsPage() {
   })
 
   const { mutate: updateSettings, isPending, isSuccess } = useMutation({
-    mutationFn: async (dto: Partial<SettingsForm>) => {
-      const { data } = await axiosInstance.patch('/settings', dto)
-      return data
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['settings'] })
-    },
-  })
+        mutationFn: async (dto: Partial<SettingsForm>) => {
+            const { data } = await axiosInstance.patch('/settings', dto)
+            return data
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['settings'] })
+            reset(data)
+        },
+    })
 
  const { register, handleSubmit, reset, formState: { isDirty } } = useForm<SettingsForm>()
 
@@ -42,8 +43,16 @@ export function SettingsPage() {
   }, [settings, reset])
 
   const onSubmit = (values: SettingsForm) => {
-    updateSettings(values)
-  }
+        updateSettings({
+            restaurantName: values.restaurantName,
+            systemName: values.systemName,
+            timezone: values.timezone,
+            currency: values.currency,
+            dateFormat: values.dateFormat,
+            expirationAlertDays: Number(values.expirationAlertDays),
+            allowNegativeStock: values.allowNegativeStock,
+        })
+    }
 
   if (isLoading) {
     return (

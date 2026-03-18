@@ -21,8 +21,8 @@ export class SettingsService {
   async update(dto: UpdateSettingsDto): Promise<SettingsResponseDto> {
     const settings = await this.get()
     return this.prisma.tenantSettings.update({
-      where: { id: settings.id },
-      data: dto,
+        where: { id: settings.id },
+        data: dto,
     })
   }
 }
