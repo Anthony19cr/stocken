@@ -35,7 +35,7 @@ export function SettingsPage() {
     },
   })
 
-  const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<SettingsForm>()
+ const { register, handleSubmit, reset, formState: { isDirty } } = useForm<SettingsForm>()
 
   useEffect(() => {
     if (settings) reset(settings)
