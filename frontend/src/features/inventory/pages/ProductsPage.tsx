@@ -6,9 +6,11 @@ import { StockStatusBadge } from '../components/StockStatusBadge'
 import { CreateProductModal } from '../components/CreateProductModal'
 import { EditProductModal } from '../components/EditProductModal'
 import { ConfirmModal } from '../../../components/ui/ConfirmModal'
+import { usePermissions } from '../../../hooks/usePermissions'
 import type { Product } from '../types/product.types'
 
 export function ProductsPage() {
+  const perms = usePermissions()
   const [search, setSearch] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [lowStock, setLowStock] = useState(false)
@@ -45,13 +47,15 @@ export function ProductsPage() {
             {data?.total ?? 0} productos registrados
           </p>
         </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
-        >
-          <Plus size={16} />
-          Nuevo producto
-        </button>
+        {perms.canManageProducts && (
+          <button
+            onClick={() => setShowCreate(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            <Plus size={16} />
+            Nuevo producto
+          </button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -112,7 +116,9 @@ export function ProductsPage() {
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock actual</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mínimo</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                  {perms.canManageProducts && (
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -143,24 +149,26 @@ export function ProductsPage() {
                     <td className="px-4 py-3">
                       <StockStatusBadge status={product.stockStatus} />
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setEditingProduct(product)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Editar"
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          onClick={() => setDeactivatingProduct(product)}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Desactivar"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
+                    {perms.canManageProducts && (
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setEditingProduct(product)}
+                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                          <button
+                            onClick={() => setDeactivatingProduct(product)}
+                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Desactivar"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

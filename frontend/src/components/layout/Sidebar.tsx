@@ -1,45 +1,40 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  Package,
-  ArrowDownCircle,
-  ArrowUpCircle,
-  Truck,
-  BarChart3,
-  Settings,
-  Users,
-  LogOut,
-  ChevronRight,
+  LayoutDashboard, Package, ArrowDownCircle,
+  ArrowUpCircle, Truck, BarChart3, Settings,
+  Users, LogOut, ChevronRight,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
+import { usePermissions } from '../../hooks/usePermissions'
 import { authService } from '../../features/auth/services/auth.service'
-
-const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/inventory', icon: Package, label: 'Inventario' },
-  { to: '/entries', icon: ArrowDownCircle, label: 'Entradas' },
-  { to: '/outputs', icon: ArrowUpCircle, label: 'Salidas' },
-  { to: '/suppliers', icon: Truck, label: 'Proveedores' },
-  { to: '/reports', icon: BarChart3, label: 'Reportes' },
-]
-
-const bottomItems = [
-  { to: '/settings', icon: Settings, label: 'Configuración' },
-  { to: '/users', icon: Users, label: 'Usuarios' },
-]
 
 export function Sidebar() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
+  const perms = usePermissions()
 
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refreshToken')
     if (refreshToken) {
-      try { await authService.logout(refreshToken) } catch { /* silencioso */ }
+      try { await authService.logout(refreshToken) } catch { }
     }
     logout()
     navigate('/login')
   }
+
+  const navItems = [
+    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', show: true },
+    { to: '/inventory', icon: Package, label: 'Inventario', show: true },
+    { to: '/entries', icon: ArrowDownCircle, label: 'Entradas', show: perms.canRegisterMovements },
+    { to: '/outputs', icon: ArrowUpCircle, label: 'Salidas', show: perms.canRegisterMovements },
+    { to: '/suppliers', icon: Truck, label: 'Proveedores', show: perms.canManageSuppliers },
+    { to: '/reports', icon: BarChart3, label: 'Reportes', show: perms.canViewReports },
+  ]
+
+  const bottomItems = [
+    { to: '/settings', icon: Settings, label: 'Configuración', show: perms.canManageSettings },
+    { to: '/users', icon: Users, label: 'Usuarios', show: perms.canManageUsers },
+  ]
 
   return (
     <aside
@@ -56,12 +51,12 @@ export function Sidebar() {
 
       {/* Nav principal */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ to, icon: Icon, label }) => (
+        {navItems.filter(i => i.show).map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all group
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
               ${isActive
                 ? 'bg-blue-600 text-white'
                 : 'text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -80,24 +75,26 @@ export function Sidebar() {
       </nav>
 
       {/* Nav inferior */}
-      <div className="px-3 pb-2 space-y-0.5 border-t border-slate-800 pt-3">
-        {bottomItems.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
-              ${isActive
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`
-            }
-          >
-            <Icon size={16} className="flex-shrink-0" />
-            <span className="font-medium">{label}</span>
-          </NavLink>
-        ))}
-      </div>
+      {bottomItems.some(i => i.show) && (
+        <div className="px-3 pb-2 space-y-0.5 border-t border-slate-800 pt-3">
+          {bottomItems.filter(i => i.show).map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
+                ${isActive
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`
+              }
+            >
+              <Icon size={16} className="flex-shrink-0" />
+              <span className="font-medium">{label}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
 
       {/* Usuario */}
       <div className="px-3 pb-4 pt-2 border-t border-slate-800">
