@@ -15,6 +15,9 @@ import { OutputsModule } from './modules/outputs/outputs.module'
 import { AlertsModule } from './modules/alerts/alerts.module'
 import { DashboardModule } from './modules/dashboard/dashboard.module'
 import { SettingsModule } from './modules/settings/settings.module'
+import { BrandingModule } from './modules/branding/branding.module'
+import { FeatureFlagsModule } from './modules/feature-flags/feature-flags.module'
+import { ReportsModule } from './modules/reports/reports.module'
 import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard'
 import { RolesGuard } from './shared/guards/roles.guard'
@@ -36,6 +39,9 @@ import { RolesGuard } from './shared/guards/roles.guard'
     AlertsModule,
     DashboardModule,
     SettingsModule,
+    BrandingModule,
+    FeatureFlagsModule,
+    ReportsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
