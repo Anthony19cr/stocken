@@ -114,7 +114,7 @@ export function CreateSupplierModal({ onClose }: Props) {
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 btn-primary text-sm font-medium rounded-lg"
             >
               {isPending ? 'Creando...' : 'Crear proveedor'}
             </button>

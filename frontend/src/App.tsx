@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from './lib/query-client'
 import { useAuthStore } from './store/auth.store'
+import { TenantThemeProvider } from './providers/TenantThemeProvider'
 import { router } from './app/router'
 
 export default function App() {
@@ -15,8 +16,10 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <TenantThemeProvider>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </TenantThemeProvider>
     </QueryClientProvider>
   )
 }

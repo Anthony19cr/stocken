@@ -193,7 +193,7 @@ export function SettingsPage() {
           <button
             type="submit"
             disabled={isPending || !isDirty}
-            className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 btn-primary text-sm font-medium rounded-lg"
           >
             <Save size={15} />
             {isPending ? 'Guardando...' : 'Guardar cambios'}

@@ -185,7 +185,7 @@ export function CreateEntryModal({ onClose, productId }: Props) {
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 py-2 px-4 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-sm font-medium rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 btn-primary text-sm font-medium rounded-lg"
             >
               {isPending ? 'Registrando...' : 'Registrar entrada'}
             </button>

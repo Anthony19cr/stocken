@@ -316,6 +316,7 @@ model TenantBranding {
   locale         String   @default("es-CR")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  backgroundImageUrl String?
 
   @@map("tenant_branding")
 }

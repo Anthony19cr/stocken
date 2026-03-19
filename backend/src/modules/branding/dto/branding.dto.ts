@@ -18,17 +18,17 @@ export class UpdateBrandingDto {
   @IsString()
   faviconUrl?: string
 
-  @ApiPropertyOptional({ example: '#2563EB' })
+  @ApiPropertyOptional({ example: '#1b8348' })
   @IsOptional()
   @IsHexColor()
   primaryColor?: string
 
-  @ApiPropertyOptional({ example: '#64748B' })
+  @ApiPropertyOptional({ example: '#4cc17f' })
   @IsOptional()
   @IsHexColor()
   secondaryColor?: string
 
-  @ApiPropertyOptional({ example: '#F59E0B' })
+  @ApiPropertyOptional({ example: '#caf6dd' })
   @IsOptional()
   @IsHexColor()
   accentColor?: string
@@ -52,6 +52,11 @@ export class UpdateBrandingDto {
   @IsOptional()
   @IsString()
   locale?: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  backgroundImageUrl?: string
 }
 
 export class BrandingResponseDto {
@@ -67,4 +72,5 @@ export class BrandingResponseDto {
   @ApiPropertyOptional() supportEmail?: string | null
   @ApiProperty() locale: string
   @ApiProperty() updatedAt: Date
+  @ApiPropertyOptional() backgroundImageUrl?: string | null
 }

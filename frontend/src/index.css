@@ -1,22 +1,83 @@
 @import "tailwindcss";
 
 :root {
+  /* Layout */
   --sidebar-width: 240px;
   --header-height: 56px;
+
+  /* Colores de marca — sobreescritos por TenantThemeProvider */
+  --brand-dark: #1a5c3a;
+  --brand-mid: #2d8a5e;
+  --brand-light: #e8f5ee;
+  --brand-dark-10: #1a5c3a1a;
+  --brand-mid-20: #2d8a5e33;
+
+  /* Sidebar beige */
+  --sidebar-bg: #f5f0e8;
+  --sidebar-border: #e8e0d0;
+  --sidebar-text: #4a3f35;
+  --sidebar-text-muted: #9e8f82;
+  --sidebar-hover: #ede5d8;
+
+  /* Fondo general */
+  --bg-overlay: rgba(255, 255, 255, 0.82);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8fafc;
-  color: #0f172a;
+  color: #1a1a1a;
+  background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-code, .mono {
-  font-family: 'DM Mono', monospace;
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Overlay blanco sobre la imagen */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: 0;
+  pointer-events: none;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.btn-primary {
+  background-color: var(--brand-mid);
+  color: white;
+  transition: filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.9);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
 }

@@ -4,6 +4,7 @@ import { BrandingService } from './branding.service'
 import { UpdateBrandingDto, BrandingResponseDto } from './dto/branding.dto'
 import { Roles } from '../../shared/decorators/roles.decorator'
 import { UserRole } from '@prisma/client'
+import { Public } from '../../shared/decorators/public.decorator'
 
 @ApiTags('branding')
 @ApiBearerAuth()
@@ -12,6 +13,7 @@ export class BrandingController {
   constructor(private readonly brandingService: BrandingService) {}
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Obtener configuración de branding' })
   async get(): Promise<BrandingResponseDto> {
     return this.brandingService.get()

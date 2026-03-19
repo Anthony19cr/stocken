@@ -12,6 +12,7 @@ import { SuppliersPage } from '../features/suppliers/pages/SuppliersPage'
 import { ReportsPage } from '../features/reports/pages/ReportsPage'
 import { SettingsPage } from '../features/settings/pages/SettingsPage'
 import { UsersPage } from '../features/users/pages/UsersPage'
+import { BrandingPage } from '../features/settings/pages/BrandingPage'
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,14 @@ export const router = createBrowserRouter([
           <RoleGuard minRole="TENANT_ADMIN">
             <SettingsPage />
           </RoleGuard>
+        ),
+      },
+      {
+        path: 'branding',
+        element: (
+            <RoleGuard minRole="TENANT_ADMIN">
+            <BrandingPage />
+            </RoleGuard>
         ),
       },
       {

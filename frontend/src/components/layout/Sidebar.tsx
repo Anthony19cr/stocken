@@ -7,6 +7,7 @@ import {
 import { useAuthStore } from '../../store/auth.store'
 import { usePermissions } from '../../hooks/usePermissions'
 import { authService } from '../../features/auth/services/auth.service'
+import { Palette } from 'lucide-react'
 
 export function Sidebar() {
   const { user, logout } = useAuthStore()
@@ -32,21 +33,34 @@ export function Sidebar() {
   ]
 
   const bottomItems = [
+    { to: '/branding', icon: Palette, label: 'Branding', show: perms.canManageSettings },
     { to: '/settings', icon: Settings, label: 'Configuración', show: perms.canManageSettings },
     { to: '/users', icon: Users, label: 'Usuarios', show: perms.canManageUsers },
   ]
 
   return (
     <aside
-      className="fixed top-0 left-0 h-screen bg-slate-900 flex flex-col z-40"
-      style={{ width: 'var(--sidebar-width)' }}
+      className="fixed top-0 left-0 h-screen flex flex-col z-40 border-r"
+      style={{
+        width: 'var(--sidebar-width)',
+        backgroundColor: 'var(--sidebar-bg)',
+        borderColor: 'var(--sidebar-border)',
+      }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 h-14 border-b border-slate-800">
-        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+      <div
+        className="flex items-center gap-3 px-5 h-14 border-b"
+        style={{ borderColor: 'var(--sidebar-border)' }}
+      >
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: 'var(--brand-mid)' }}
+        >
           <span className="text-white text-sm font-bold">S</span>
         </div>
-        <span className="text-white font-semibold text-sm tracking-wide">Stocken</span>
+        <span className="font-semibold text-sm" style={{ color: 'var(--sidebar-text)' }}>
+          Stocken
+        </span>
       </div>
 
       {/* Nav principal */}
@@ -55,19 +69,29 @@ export function Sidebar() {
           <NavLink
             key={to}
             to={to}
+            style={({ isActive }) => isActive ? {
+              backgroundColor: 'var(--brand-dark)',
+              color: '#ffffff',
+            } : {}}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
-              ${isActive
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`
+              ${!isActive ? 'hover:bg-[var(--sidebar-hover)]' : ''}`
             }
           >
             {({ isActive }) => (
               <>
-                <Icon size={16} className="flex-shrink-0" />
-                <span className="flex-1 font-medium">{label}</span>
-                {isActive && <ChevronRight size={14} className="opacity-60" />}
+                <Icon
+                  size={16}
+                  className="flex-shrink-0"
+                  style={{ color: isActive ? '#ffffff' : 'var(--sidebar-text-muted)' }}
+                />
+                <span
+                  className="flex-1 font-medium"
+                  style={{ color: isActive ? '#ffffff' : 'var(--sidebar-text)' }}
+                >
+                  {label}
+                </span>
+                {isActive && <ChevronRight size={14} style={{ color: '#ffffff', opacity: 0.7 }} />}
               </>
             )}
           </NavLink>
@@ -76,41 +100,69 @@ export function Sidebar() {
 
       {/* Nav inferior */}
       {bottomItems.some(i => i.show) && (
-        <div className="px-3 pb-2 space-y-0.5 border-t border-slate-800 pt-3">
+        <div
+          className="px-3 pb-2 space-y-0.5 border-t pt-3"
+          style={{ borderColor: 'var(--sidebar-border)' }}
+        >
           {bottomItems.filter(i => i.show).map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
+              style={({ isActive }) => isActive ? {
+                backgroundColor: 'var(--brand-dark)',
+                color: '#ffffff',
+              } : {}}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all
-                ${isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                }`
+                ${!isActive ? 'hover:bg-[var(--sidebar-hover)]' : ''}`
               }
             >
-              <Icon size={16} className="flex-shrink-0" />
-              <span className="font-medium">{label}</span>
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    size={16}
+                    className="flex-shrink-0"
+                    style={{ color: isActive ? '#ffffff' : 'var(--sidebar-text-muted)' }}
+                  />
+                  <span
+                    className="font-medium"
+                    style={{ color: isActive ? '#ffffff' : 'var(--sidebar-text)' }}
+                  >
+                    {label}
+                  </span>
+                </>
+              )}
             </NavLink>
           ))}
         </div>
       )}
 
       {/* Usuario */}
-      <div className="px-3 pb-4 pt-2 border-t border-slate-800">
+      <div
+        className="px-3 pb-4 pt-2 border-t"
+        style={{ borderColor: 'var(--sidebar-border)' }}
+      >
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
-          <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
-            <span className="text-slate-300 text-xs font-semibold">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: 'var(--brand-light)' }}
+          >
+            <span className="text-xs font-semibold" style={{ color: 'var(--brand-dark)' }}>
               {user?.fullName?.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-xs font-medium truncate">{user?.fullName}</p>
-            <p className="text-slate-500 text-xs truncate">{user?.role}</p>
+            <p className="text-xs font-medium truncate" style={{ color: 'var(--sidebar-text)' }}>
+              {user?.fullName}
+            </p>
+            <p className="text-xs truncate" style={{ color: 'var(--sidebar-text-muted)' }}>
+              {user?.role}
+            </p>
           </div>
           <button
             onClick={handleLogout}
-            className="text-slate-500 hover:text-red-400 transition-colors p-1 rounded"
+            className="p-1 rounded transition-colors hover:opacity-70"
+            style={{ color: 'var(--sidebar-text-muted)' }}
             title="Cerrar sesión"
           >
             <LogOut size={14} />

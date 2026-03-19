@@ -10,6 +10,7 @@ const pageTitles: Record<string, string> = {
   '/suppliers': 'Proveedores',
   '/reports': 'Reportes',
   '/settings': 'Configuración',
+  '/branding': 'Branding',
   '/users': 'Usuarios',
 }
 
@@ -18,7 +19,7 @@ export function AppLayout() {
   const title = pageTitles[location.pathname] ?? 'Stocken'
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Sidebar />
       <Header title={title} />
       <main

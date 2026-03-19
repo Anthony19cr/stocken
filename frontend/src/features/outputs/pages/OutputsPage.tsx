@@ -26,7 +26,7 @@ export function OutputsPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 btn-primary text-sm font-medium rounded-lg"
         >
           <Plus size={16} />
           Registrar salida
