@@ -81,7 +81,7 @@ export function ReportsPage() {
 
       {/* Filtros de fecha — solo para consumo y movimientos */}
       {(activeTab === 'consumption' || activeTab === 'movements') && (
-        <div className="flex items-center gap-3 p-1.5 rounded-xl"
+        <div className="flex items-center gap-3 p-1.5 w-fit rounded-xl"
              style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-600">Desde</label>

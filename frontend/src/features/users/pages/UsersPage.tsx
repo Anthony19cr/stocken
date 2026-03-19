@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Plus, Search, Users, Shield } from 'lucide-react'
+import { Plus, Search, Users, Shield, Pencil } from 'lucide-react'
 import { useUsers, useToggleUserActive } from '../hooks/useUsers'
 import { CreateUserModal } from '../components/CreateUserModal'
-import { USER_ROLE_LABELS, USER_ROLE_COLORS } from '../types/user.types'
+import { EditUserModal } from '../components/EditUserModal'
+import { USER_ROLE_LABELS, USER_ROLE_COLORS, type User } from '../types/user.types'
 import { useAuthStore } from '../../../store/auth.store'
 
 export function UsersPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [showCreate, setShowCreate] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
   const currentUser = useAuthStore((s) => s.user)
 
   const { data, isLoading } = useUsers(page, search || undefined)
@@ -25,7 +27,7 @@ export function UsersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Usuarios</h2>
-          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit"
             style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} usuarios registrados
           </p>
@@ -39,8 +41,8 @@ export function UsersPage() {
         </button>
       </div>
 
-      <div className="relative max-w-sm" 
-        style={{backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem'}}>
+      <div className="relative max-w-sm"
+        style={{ backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           value={search}
@@ -112,19 +114,31 @@ export function UsersPage() {
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="px-4 py-3">
-                      {user.id !== currentUser?.id && (
+                      <div className="flex items-center gap-2">
+                        {/* Editar — disponible para todos */}
                         <button
-                          onClick={() => toggleActive({ id: user.id, isActive: !user.isActive })}
-                          disabled={toggling}
-                          className={`text-xs font-medium transition-colors
-                            ${user.isActive
-                              ? 'text-red-500 hover:text-red-700'
-                              : 'text-green-600 hover:text-green-800'
-                            }`}
+                          onClick={() => setEditingUser(user)}
+                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Editar"
                         >
-                          {user.isActive ? 'Desactivar' : 'Activar'}
+                          <Pencil size={14} />
                         </button>
-                      )}
+
+                        {/* Activar/Desactivar — no disponible para uno mismo */}
+                        {user.id !== currentUser?.id && (
+                          <button
+                            onClick={() => toggleActive({ id: user.id, isActive: !user.isActive })}
+                            disabled={toggling}
+                            className={`text-xs font-medium transition-colors
+                              ${user.isActive
+                                ? 'text-red-500 hover:text-red-700'
+                                : 'text-green-600 hover:text-green-800'
+                              }`}
+                          >
+                            {user.isActive ? 'Desactivar' : 'Activar'}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -159,6 +173,7 @@ export function UsersPage() {
       </div>
 
       {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} />}
+      {editingUser && <EditUserModal user={editingUser} onClose={() => setEditingUser(null)} />}
     </div>
   )
 }
