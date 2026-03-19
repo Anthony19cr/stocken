@@ -25,11 +25,17 @@ export function AppLayout() {
       <main
         className="pt-14 min-h-screen"
         style={{ paddingLeft: 'var(--sidebar-width)' }}
-      >
-        <div className="p-6">
-          <Outlet />
+        >
+        <div
+            className="min-h-screen p-6"
+            style={{
+            backgroundColor: 'rgba(255,255,255,0.72)',
+            backdropFilter: 'blur(2px)',
+            }}
+        >
+            <Outlet />
         </div>
-      </main>
+        </main>
     </div>
   )
 }

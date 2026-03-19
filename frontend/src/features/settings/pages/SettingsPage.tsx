@@ -69,7 +69,8 @@ export function SettingsPage() {
 
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Configuración del sistema</h2>
-        <p className="text-sm text-gray-500 mt-0.5">
+        <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
           Parámetros operativos del negocio
         </p>
       </div>

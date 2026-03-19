@@ -29,7 +29,9 @@ export function LoginPage() {
             <span className="text-white text-2xl font-bold">S</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Stocken</h1>
-          <p className="text-gray-500 mt-1">Sistema de Gestión de Inventario</p>
+          <p className="text-gray-700 mt-1 px-2 w-fit mx-auto font-medium" style={{ backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '0.5rem' }}>
+            Sistema de Gestión de Inventario
+          </p>
         </div>
 
         {/* Card */}
@@ -99,7 +101,7 @@ export function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-gray-700 mt-6 px-2 w-fit mx-auto" style={{ backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '0.3rem' }}>
           Stocken — Gestión de Inventario para Restaurantes
         </p>
       </div>

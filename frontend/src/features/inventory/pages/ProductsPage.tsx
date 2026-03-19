@@ -43,7 +43,8 @@ export function ProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} productos registrados
           </p>
         </div>
@@ -59,7 +60,12 @@ export function ProductsPage() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48">
+        <div 
+            className="relative flex-1 min-w-48" 
+            style={{ 
+                backgroundColor: 'rgba(255,255,255,0.6)', 
+                borderRadius: '0.5rem' 
+            }}>
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             value={search}
@@ -69,9 +75,13 @@ export function ProductsPage() {
           />
         </div>
         <select
-          value={categoryId}
-          onChange={(e) => { setCategoryId(e.target.value); setPage(1) }}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
+            value={categoryId}
+            onChange={(e) => { setCategoryId(e.target.value); setPage(1) }}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
+            style={{ 
+                backgroundColor: 'rgba(255,255,255,0.6)', 
+                borderRadius: '0.5rem'
+            }}
         >
           <option value="">Todas las categorías</option>
           {categories.map((c) => (
@@ -79,12 +89,16 @@ export function ProductsPage() {
           ))}
         </select>
         <button
-          onClick={() => { setLowStock(!lowStock); setPage(1) }}
-          className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm font-medium transition-colors
-            ${lowStock
-              ? 'bg-yellow-50 border-yellow-300 text-yellow-700'
-              : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-            }`}
+            onClick={() => { setLowStock(!lowStock); setPage(1) }}
+            className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm font-medium transition-colors
+                ${lowStock
+                ? 'border-yellow-300 text-yellow-700' // Quitamos bg-yellow-50 para usar el personalizado
+                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                }`}
+            style={{ 
+                backgroundColor: lowStock ? 'rgba(254, 249, 195, 0.6)' : 'rgba(255, 255, 255, 0.6)', 
+                borderRadius: '0.5rem' 
+            }}
         >
           <AlertTriangle size={14} />
           Stock bajo

@@ -54,30 +54,35 @@ export function ReportsPage() {
 
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Reportes</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Análisis operativo del inventario</p>
+        <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
+            Análisis operativo del inventario
+        </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 rounded-xl w-fit"
+        style={{ backgroundColor: 'rgba(255,255,255,0.85)' }}>
         {tabs.map(({ id, label, icon: Icon }) => (
-          <button
+            <button
             key={id}
             onClick={() => setActiveTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
-              ${activeTab === id
+                ${activeTab === id
                 ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-              }`}
-          >
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
+            >
             <Icon size={14} />
             {label}
-          </button>
+            </button>
         ))}
       </div>
 
       {/* Filtros de fecha — solo para consumo y movimientos */}
       {(activeTab === 'consumption' || activeTab === 'movements') && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 p-1.5 rounded-xl"
+             style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
           <div className="flex items-center gap-2">
             <label className="text-sm text-gray-600">Desde</label>
             <input

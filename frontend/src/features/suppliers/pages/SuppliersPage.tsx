@@ -29,7 +29,8 @@ export function SuppliersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Proveedores</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} proveedores registrados
           </p>
         </div>
@@ -42,7 +43,8 @@ export function SuppliersPage() {
         </button>
       </div>
 
-      <div className="relative max-w-sm">
+      <div className="relative max-w-sm rounded-[.5rem]" 
+        style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}>
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           value={search}

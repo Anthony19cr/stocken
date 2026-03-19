@@ -20,7 +20,7 @@ export function DashboardPage() {
       <div className="space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Resumen operativo</h2>
-          <p className="text-sm text-gray-500 mt-1">Cargando datos...</p>
+          <p className="text-sm font-medium mt-0.5" style={{ color: 'var(--brand-dark)' }}>Cargando datos...</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -54,10 +54,11 @@ export function DashboardPage() {
     <div className="space-y-6">
 
       {/* Encabezado */}
-      <div>
+      <div className="inline-block">
         <h2 className="text-lg font-semibold text-gray-900 capitalize">{today}</h2>
-        <p className="text-sm text-gray-500 mt-0.5">
-          Resumen operativo del inventario
+        <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
+            Resumen operativo del inventario
         </p>
       </div>
 
@@ -73,8 +74,9 @@ export function DashboardPage() {
 
       {/* KPIs principales */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Inventario
+        <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 inline-block px-2 py-0.5 rounded"
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
+            Inventario
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <StatCard
@@ -113,8 +115,9 @@ export function DashboardPage() {
 
       {/* Actividad del día */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Actividad
+        <h3 className="text-xs font-semibold uppercase tracking-wider mb-3 inline-block px-2 py-0.5 rounded"
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.7)' }}>
+            Actividad
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard

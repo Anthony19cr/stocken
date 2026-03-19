@@ -20,7 +20,8 @@ export function OutputsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Salidas de inventario</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+            style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} salidas registradas
           </p>
         </div>
