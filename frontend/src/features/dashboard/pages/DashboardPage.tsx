@@ -62,10 +62,10 @@ export function DashboardPage() {
         </p>
       </div>
 
-      {/* Alertas activas — destacado si hay */}
+      {/* Alertas activas */}
       {data.activeAlertsCount > 0 && (
-        <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <Bell size={16} className="text-amber-500 flex-shrink-0" />
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <Bell size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-amber-800">
             Tienes <span className="font-semibold">{data.activeAlertsCount} alertas activas</span> que requieren atención.
           </p>

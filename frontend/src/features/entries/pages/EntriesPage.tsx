@@ -19,7 +19,7 @@ export function EntriesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Entradas de inventario</h2>
-          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit"
             style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} entradas registradas
           </p>
@@ -35,12 +35,10 @@ export function EntriesPage() {
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8">
-            <div className="animate-pulse space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-12 bg-gray-100 rounded" />
-              ))}
-            </div>
+          <div className="p-8 animate-pulse space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-12 bg-gray-100 rounded" />
+            ))}
           </div>
         ) : !data?.data?.length ? (
           <div className="p-12 text-center">
@@ -49,47 +47,67 @@ export function EntriesPage() {
             <p className="text-gray-400 text-sm mt-1">Registra el primer ingreso de mercadería</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Proveedor</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Costo unit.</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Vencimiento</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {data.data.map((entry) => (
-                  <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900">
-                      {entry.productName ?? '—'}
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">
-                      {entry.supplierName ?? <span className="text-gray-300">Sin proveedor</span>}
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold text-green-600">
-                      +{entry.quantity}
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-500">
-                      {entry.unitCost ? `₡${entry.unitCost.toLocaleString()}` : '—'}
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">
-                      {entry.expirationDate
-                        ? <span className="text-orange-600">{formatDate(entry.expirationDate)}</span>
-                        : '—'
-                      }
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs">
-                      {formatDate(entry.entryDate)}
-                    </td>
+          <>
+            {/* Desktop: tabla */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Proveedor</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Costo unit.</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Vencimiento</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {data.data.map((entry) => (
+                    <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-gray-900">{entry.productName ?? '—'}</td>
+                      <td className="px-4 py-3 text-gray-500">
+                        {entry.supplierName ?? <span className="text-gray-300">Sin proveedor</span>}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-green-600">+{entry.quantity}</td>
+                      <td className="px-4 py-3 text-right text-gray-500">
+                        {entry.unitCost ? `₡${entry.unitCost.toLocaleString()}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        {entry.expirationDate
+                          ? <span className="text-orange-600">{formatDate(entry.expirationDate)}</span>
+                          : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(entry.entryDate)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Móvil: cards */}
+            <div className="md:hidden divide-y divide-gray-50">
+              {data.data.map((entry) => (
+                <div key={entry.id} className="p-4">
+                  <div className="flex items-start justify-between">
+                    <p className="font-medium text-gray-900">{entry.productName}</p>
+                    <span className="font-semibold text-green-600 text-sm">+{entry.quantity}</span>
+                  </div>
+                  <div className="mt-2 space-y-1">
+                    {entry.supplierName && (
+                      <p className="text-xs text-gray-500">Proveedor: {entry.supplierName}</p>
+                    )}
+                    {entry.unitCost && (
+                      <p className="text-xs text-gray-500">Costo: ₡{entry.unitCost.toLocaleString()}</p>
+                    )}
+                    {entry.expirationDate && (
+                      <p className="text-xs text-orange-600">Vence: {formatDate(entry.expirationDate)}</p>
+                    )}
+                    <p className="text-xs text-gray-400">{formatDate(entry.entryDate)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {data && data.total > 20 && (

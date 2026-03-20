@@ -43,7 +43,7 @@ export function ProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
-          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit" 
+          <p className="text-sm font-medium mt-0.5 px-2 py-0.5 w-fit"
             style={{ color: 'var(--brand-dark)', backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
             {data?.total ?? 0} productos registrados
           </p>
@@ -60,12 +60,9 @@ export function ProductsPage() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <div 
-            className="relative flex-1 min-w-48" 
-            style={{ 
-                backgroundColor: 'rgba(255,255,255,0.6)', 
-                borderRadius: '0.5rem' 
-            }}>
+        <div
+          className="relative flex-1 min-w-48"
+          style={{ backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}>
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             value={search}
@@ -75,13 +72,10 @@ export function ProductsPage() {
           />
         </div>
         <select
-            value={categoryId}
-            onChange={(e) => { setCategoryId(e.target.value); setPage(1) }}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
-            style={{ 
-                backgroundColor: 'rgba(255,255,255,0.6)', 
-                borderRadius: '0.5rem'
-            }}
+          value={categoryId}
+          onChange={(e) => { setCategoryId(e.target.value); setPage(1) }}
+          className="min-w-0 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
+          style={{ backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: '0.5rem' }}
         >
           <option value="">Todas las categorías</option>
           {categories.map((c) => (
@@ -89,16 +83,13 @@ export function ProductsPage() {
           ))}
         </select>
         <button
-            onClick={() => { setLowStock(!lowStock); setPage(1) }}
-            className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm font-medium transition-colors
-                ${lowStock
-                ? 'border-yellow-300 text-yellow-700' // Quitamos bg-yellow-50 para usar el personalizado
-                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                }`}
-            style={{ 
-                backgroundColor: lowStock ? 'rgba(254, 249, 195, 0.6)' : 'rgba(255, 255, 255, 0.6)', 
-                borderRadius: '0.5rem' 
-            }}
+          onClick={() => { setLowStock(!lowStock); setPage(1) }}
+          className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm font-medium transition-colors
+            ${lowStock ? 'border-yellow-300 text-yellow-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+          style={{
+            backgroundColor: lowStock ? 'rgba(254, 249, 195, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+            borderRadius: '0.5rem'
+          }}
         >
           <AlertTriangle size={14} />
           Stock bajo
@@ -121,73 +112,108 @@ export function ProductsPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoría</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock actual</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mínimo</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                  {perms.canManageProducts && (
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {data.data.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="font-medium text-gray-900">{product.name}</p>
-                        {product.sku && (
-                          <p className="text-xs text-gray-400 font-mono mt-0.5">{product.sku}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">{product.categoryName ?? '—'}</td>
-                    <td className="px-4 py-3 text-right">
-                      <span className={`font-semibold ${
-                        product.stockStatus === 'OUT' ? 'text-red-600' :
-                        product.stockStatus === 'LOW' ? 'text-yellow-600' :
-                        'text-gray-900'
-                      }`}>
-                        {product.currentStock}
-                      </span>
-                      <span className="text-gray-400 ml-1">{product.unitSymbol}</span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-gray-500">
-                      {product.minimumStock} {product.unitSymbol}
-                    </td>
-                    <td className="px-4 py-3">
-                      <StockStatusBadge status={product.stockStatus} />
-                    </td>
+          <>
+            {/* Desktop: tabla */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoría</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock actual</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mínimo</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                     {perms.canManageProducts && (
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setEditingProduct(product)}
-                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Editar"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            onClick={() => setDeactivatingProduct(product)}
-                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Desactivar"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {data.data.map((product) => (
+                    <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium text-gray-900">{product.name}</p>
+                          {product.sku && <p className="text-xs text-gray-400 font-mono mt-0.5">{product.sku}</p>}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">{product.categoryName ?? '—'}</td>
+                      <td className="px-4 py-3 text-right">
+                        <span className={`font-semibold ${
+                          product.stockStatus === 'OUT' ? 'text-red-600' :
+                          product.stockStatus === 'LOW' ? 'text-yellow-600' : 'text-gray-900'
+                        }`}>{product.currentStock}</span>
+                        <span className="text-gray-400 ml-1">{product.unitSymbol}</span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-500">
+                        {product.minimumStock} {product.unitSymbol}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StockStatusBadge status={product.stockStatus} />
+                      </td>
+                      {perms.canManageProducts && (
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => setEditingProduct(product)}
+                              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                              <Pencil size={14} />
+                            </button>
+                            <button onClick={() => setDeactivatingProduct(product)}
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Móvil: cards */}
+            <div className="md:hidden divide-y divide-gray-50">
+              {data.data.map((product) => (
+                <div key={product.id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="font-medium text-gray-900">{product.name}</p>
+                      {product.sku && <p className="text-xs text-gray-400 font-mono">{product.sku}</p>}
+                      <p className="text-xs text-gray-400 mt-0.5">{product.categoryName}</p>
+                    </div>
+                    <StockStatusBadge status={product.stockStatus} />
+                  </div>
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex gap-4 text-sm">
+                      <div>
+                        <p className="text-xs text-gray-400">Stock actual</p>
+                        <p className={`font-semibold ${
+                          product.stockStatus === 'OUT' ? 'text-red-600' :
+                          product.stockStatus === 'LOW' ? 'text-yellow-600' : 'text-gray-900'
+                        }`}>{product.currentStock} {product.unitSymbol}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400">Mínimo</p>
+                        <p className="font-medium text-gray-600">{product.minimumStock} {product.unitSymbol}</p>
+                      </div>
+                    </div>
+                    {perms.canManageProducts && (
+                      <div className="flex gap-2">
+                        <button onClick={() => setEditingProduct(product)}
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                          <Pencil size={15} />
+                        </button>
+                        <button onClick={() => setDeactivatingProduct(product)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {data && data.total > 20 && (
@@ -216,7 +242,12 @@ export function ProductsPage() {
       </div>
 
       {showCreate && <CreateProductModal onClose={() => setShowCreate(false)} />}
-      {editingProduct && <EditProductModal product={editingProduct} onClose={() => setEditingProduct(null)} />}
+      {editingProduct && (
+        <EditProductModal
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+        />
+      )}
       {deactivatingProduct && (
         <ConfirmModal
           title="Desactivar producto"
