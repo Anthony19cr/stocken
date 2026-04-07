@@ -1,4 +1,5 @@
 import { X, AlertTriangle } from 'lucide-react'
+import { createPortal } from 'react-dom'
 
 interface Props {
   title: string
@@ -19,17 +20,31 @@ export function ConfirmModal({
   isPending,
   variant = 'danger',
 }: Props) {
-  return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+  return createPortal(
+    <>
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+
+      <div
+        className="fixed z-50 bg-white rounded-2xl shadow-xl flex flex-col"
+        style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'calc(100% - 32px)',
+          maxWidth: '384px',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <h2 className="text-base font-semibold text-gray-900">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X size={18} />
           </button>
         </div>
 
-        <div className="px-6 py-4">
+        {/* Contenido */}
+        <div className="px-6 py-4 flex-shrink-0">
           <div className={`flex items-start gap-3 p-3 rounded-lg mb-4
             ${variant === 'danger' ? 'bg-red-50' : 'bg-yellow-50'}`}>
             <AlertTriangle size={16} className={`flex-shrink-0 mt-0.5
@@ -58,6 +73,7 @@ export function ConfirmModal({
           </div>
         </div>
       </div>
-    </div>
+    </>,
+    document.body,
   )
 }

@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { X } from 'lucide-react'
+import { createPortal } from 'react-dom'
 import { useCreateUser } from '../hooks/useUsers'
 import { USER_ROLE_LABELS, type UserRole } from '../types/user.types'
 
@@ -42,11 +43,24 @@ export function CreateUserModal({ onClose }: Props) {
     ? (error as any)?.response?.data?.error?.message ?? 'Error al crear el usuario'
     : null
 
-  return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto modal-fullscreen">
+  return createPortal(
+    <>
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
 
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <div
+        className="fixed z-50 bg-white rounded-2xl shadow-xl flex flex-col"
+        style={{
+          top: 'calc(var(--header-height) + 16px)',
+          bottom: '16px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'calc(100% - 32px)',
+          maxWidth: '512px',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header fijo */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <div>
             <h2 className="text-base font-semibold text-gray-900">Nuevo usuario</h2>
             <p className="text-xs text-gray-400 mt-0.5">Acceso al sistema de inventario</p>
@@ -56,101 +70,105 @@ export function CreateUserModal({ onClose }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit as any)} className="px-6 py-4 space-y-4">
-          {errorMessage && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{errorMessage}</p>
+        {/* Contenido scrollable */}
+        <div className="overflow-y-auto flex-1 px-6 py-4">
+          <form id="create-user-form" onSubmit={handleSubmit(onSubmit as any)} className="space-y-4">
+            {errorMessage && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{errorMessage}</p>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre completo <span className="text-red-500">*</span>
+              </label>
+              <input
+                {...register('fullName')}
+                className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
+                  ${errors.fullName ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
+                placeholder="Ej: Juan Pérez"
+              />
+              {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName.message}</p>}
             </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre completo <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register('fullName')}
-              className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
-                ${errors.fullName ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
-              placeholder="Ej: Juan Pérez"
-            />
-            {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register('email')}
-              type="email"
-              className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
-                ${errors.email ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
-              placeholder="usuario@restaurante.com"
-            />
-            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contraseña <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register('password')}
-              type="password"
-              className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
-                ${errors.password ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
-              placeholder="Mínimo 6 caracteres"
-            />
-            {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Rol <span className="text-red-500">*</span>
-            </label>
-            <select
-              {...register('role')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
-            >
-              {Object.entries(USER_ROLE_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-
-            {/* Descripción de roles */}
-            <div className="mt-2 grid grid-cols-2 gap-1.5">
-              {[
-                { role: 'TENANT_ADMIN', desc: 'Acceso total' },
-                { role: 'MANAGER', desc: 'Inventario y reportes' },
-                { role: 'WAREHOUSE', desc: 'Entradas y salidas' },
-                { role: 'VIEWER', desc: 'Solo consulta' },
-              ].map(({ role, desc }) => (
-                <div key={role} className="flex items-center gap-1.5 text-xs text-gray-400">
-                  <span className="font-medium text-gray-600">{USER_ROLE_LABELS[role as UserRole]}:</span>
-                  {desc}
-                </div>
-              ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                {...register('email')}
+                type="email"
+                className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
+                  ${errors.email ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
+                placeholder="usuario@restaurante.com"
+              />
+              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
             </div>
-          </div>
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex items-center gap-2 px-4 py-2 btn-primary text-sm font-medium rounded-lg"
-            >
-              {isPending ? 'Creando...' : 'Crear usuario'}
-            </button>
-          </div>
-        </form>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contraseña <span className="text-red-500">*</span>
+              </label>
+              <input
+                {...register('password')}
+                type="password"
+                className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors
+                  ${errors.password ? 'border-red-300' : 'border-gray-300 focus:border-blue-500'}`}
+                placeholder="Mínimo 6 caracteres"
+              />
+              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rol <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register('role')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors"
+              >
+                {Object.entries(USER_ROLE_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <div className="mt-2 grid grid-cols-2 gap-1.5">
+                {[
+                  { role: 'TENANT_ADMIN', desc: 'Acceso total' },
+                  { role: 'MANAGER', desc: 'Inventario y reportes' },
+                  { role: 'WAREHOUSE', desc: 'Entradas y salidas' },
+                  { role: 'VIEWER', desc: 'Solo consulta' },
+                ].map(({ role, desc }) => (
+                  <div key={role} className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <span className="font-medium text-gray-600">{USER_ROLE_LABELS[role as UserRole]}:</span>
+                    {desc}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </form>
+        </div>
+
+        {/* Botones fijos abajo */}
+        <div className="flex gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="create-user-form"
+            disabled={isPending}
+            className="flex-1 py-2 px-4 btn-primary text-sm font-medium rounded-lg"
+          >
+            {isPending ? 'Creando...' : 'Crear usuario'}
+          </button>
+        </div>
       </div>
-    </div>
+    </>,
+    document.body,
   )
 }

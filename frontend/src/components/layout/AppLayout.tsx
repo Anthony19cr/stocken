@@ -19,22 +19,17 @@ export function AppLayout() {
   const title = pageTitles[location.pathname] ?? 'Stocken'
 
   return (
-    <div className="min-h-screen">
+    <>
       <Sidebar />
       <Header title={title} />
       <main
-        className="pt-14 min-h-screen lg:pl-[240px]"
+        className="lg:pl-[240px]"
+        style={{ paddingTop: 'var(--header-height)' }}
       >
-        <div
-          className="min-h-screen p-4 lg:p-6"
-          style={{
-            backgroundColor: 'rgba(255,255,255,0.72)',
-            backdropFilter: 'blur(2px)',
-          }}
-        >
+        <div className="p-4 lg:p-6" style={{backdropFilter: 'blur(2px)'}}>
           <Outlet />
         </div>
       </main>
-    </div>
+    </>
   )
 }
